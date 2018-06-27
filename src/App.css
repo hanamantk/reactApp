@@ -1,0 +1,14 @@
+.container{
+ width:900px;
+ margin-top: 5%;
+ background:rgb(253, 248, 249);
+ height: 100vh;
+ margin: auto;
+}
+
+.hidden{
+    display: none;
+}
+.visible{
+    visibility: initial;
+}
