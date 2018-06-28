@@ -4,19 +4,10 @@ import {fetchData,getEmpDetail} from '../actions/postActions';
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { Dropdown } from 'office-ui-fabric-react/lib/Dropdown';
 import { Image } from 'office-ui-fabric-react/lib/Image';
+import {HRID,EMPID,DEPT} from './datasource';
 import store from '../store';
 
-const HRID=[
-    { key: 'A', text: '1' },{ key: 'B', text: '2' },
-    { key: 'C', text: '3' },{ key: 'D', text: '4' },{ key: 'E', text: '5' }
-  ]
-const EMPID=[
-    { key: 'A', text: '6' },{ key: 'B', text: '7' },
-    { key: 'C', text: '8' },{ key: 'D', text: '9' },{ key: 'E', text: '10' }
-  ];
 
-const DEPT=[ { key: 'HR', text: 'HR' },{ key: 'EG', text: 'ENGINEERING' }
-  ]
 class Home extends Component {
     constructor(props) {
         super(props)
@@ -46,19 +37,18 @@ class Home extends Component {
                 
        let {id,first_name,avatar}=data;
        this.setState({
-           imageLoad:"",
-           img:"",
-           id:id,
-           fname:first_name,
-           avatar:avatar
-        })
-    
-    }
+                        imageLoad:"",
+                        img:"",
+                        id:id,
+                        fname:first_name,
+                        avatar:avatar
+                })
+        }
   
       getDetails(){
        this.setState({
-           img:'hidden',
-           imageLoad:"Loading..."
+                    img:'hidden',
+                    imageLoad:"Loading..."
         })   
        this.props.getEmpDetail(this.state.empId,);
        
@@ -66,16 +56,16 @@ class Home extends Component {
 
       clearDetails(){
        this.setState({
-        btnDesabled:true,
-        initialSelect:"",
-        ID:[],
-        empId:'',
-        imageLoad:'',
-        img :'hidden',
-        avatar:"",
-        id:'',
-        fname:'',
-    })
+                    btnDesabled:true,
+                    initialSelect:"",
+                    ID:[],
+                    empId:'',
+                    imageLoad:'',
+                    img :'hidden',
+                    avatar:"",
+                    id:'',
+                    fname:'',
+            })
      }
 
       changeDept(val){
@@ -96,9 +86,9 @@ class Home extends Component {
         this.setState({empId:emId});
       }
 
-      render() { 
+    render() { 
        
-      return (
+         return (
                 <div className="ms-Grid container">
                     <div className="ms-Grid-row">
                         <div className="ms-Grid-col ms-md3 ms-lg3">
@@ -124,17 +114,17 @@ class Home extends Component {
                    </div>
                         <br/><br/>
              <div className="ms-Grid-row">
-                <div className="ms-Grid-col ms-md1 ms-lg1"></div>
+                <div className="ms-Grid-col ms-md3 ms-lg3"></div>
                         {this.state.imageLoad}
                         <Image
                             className={this.state.img}
                             src={this.state.avatar}
                             alt="Default Image can be anything"
-                            width={500}
+                            width={300}
                             />
-             </div>
+             </div><br/>
                 <div className="ms-Grid-row">
-                    <div className="ms-Grid-col ms-md2 ms-lg2"></div>
+                    <div className="ms-Grid-col ms-md3 ms-lg3"></div>
                         <div className="ms-Grid-col ms-md2 ms-lg2">ID:{this.state.id}</div>
                         <div className="ms-Grid-col ms-md2 ms-lg2">Name:{this.state.fname}</div>
                     </div>
@@ -148,8 +138,6 @@ class Home extends Component {
     emp:state.empDetails.items,
     post:state.empDetails.item
   })
-  
-  export default connect(mapStateToProps,{fetchData,getEmpDetail})(Home)
 
   const Btn=(props)=>{
     return <div> <div className="ms-Grid-col ms-md2 ms-lg2" style={{marginTop:28}}>
@@ -161,3 +149,6 @@ class Home extends Component {
         />
     </div></div>
  };
+
+ export default connect(mapStateToProps,{fetchData,getEmpDetail})(Home)
+ 
