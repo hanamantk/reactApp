@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "enzyme": "^3.3.0",
+    "jest": "^23.2.0",
     "react-scripts": "1.1.4"
   },
   "dependencies": {
-    "faker": "^4.1.0",
     "office-ui-fabric-react": "^6.20.0",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
