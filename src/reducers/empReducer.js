@@ -1,7 +1,6 @@
 import {FETCH_USERS,NEW_EMP} from '../actions/types'
 const initialState={
-    item:[],
-    items:{}
+    items:[],
 }
 
 export default function(state=initialState,action){

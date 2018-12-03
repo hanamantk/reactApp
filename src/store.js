@@ -8,9 +8,7 @@ const store=createStore(
                         rootReducer,
                         initialState,
                         compose(
-                            applyMiddleware(...midlleware),
-                            window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+                            applyMiddleware(...midlleware)
                         )
-                        
-                    )
+                         )
 export default store;

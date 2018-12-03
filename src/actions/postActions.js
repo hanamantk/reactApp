@@ -1,7 +1,7 @@
 import {FETCH_USERS,NEW_EMP} from './types'
 
 export const  fetchData=() => dispatch=>{
-   return fetch('https://reqres.in/api/users/')
+   return fetch('http://localhost/reactApp/Api/class.php')
     .then(resp=>resp.json())
     .then(posts=>dispatch({
         type:FETCH_USERS,

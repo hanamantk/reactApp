@@ -1,14 +1,81 @@
-.container{
- width:900px;
- margin-top: 5%;
- background:rgb(253, 248, 249);
- height: 100vh;
- margin: auto;
+.product-form{
+ width:960px;
+ margin-top: 2%;
+ margin-left:7em;
+ background: pink;
+  opacity: 0.9;
+  position: relative;
+  
+}
+body{
+	background: pink;
+  opacity: 0.9;
 }
 
-.hidden{
-    display: none;
+h2{
+	text-align: center;
 }
-.visible{
-    visibility: initial;
+form{
+	float: left;
+	width: 480px;
+}
+
+.package{
+	float: right;
+	margin-right: 0.5em;	
+	width: 380px;
+	min-height: 500px;
+	border: 1px solid red;
+	background: blue;
+	opacity: 0.5;
+	color: white;
+}
+
+table {
+    border-collapse: collapse;
+
+}
+th {
+	font-size: 22px;
+	color: blue;
+}
+table, td, th {
+    border: none;
+    padding: 15px;
+    text-align: center;
+}
+
+input[type="checkbox"]{
+  width: 20px; 
+  height: 20px; 
+  cursor: pointer;
+}
+
+.submit-btn{
+	position: fixed;
+	z-index: 10;
+	top:80%;
+	right:25%;
+	padding: 10px;
+	width: 200px;
+	border-radius: 5px;
+	background: green;
+	opacity: .6;
+	color: white;
+	border: none;
+	text-align: center;
+	font-size: 16px;
+	margin:50px 100px;
+	cursor: pointer;
+}
+
+ul li{
+	margin-bottom: 20px;
+}
+
+h4{
+	margin-bottom: 0px;
+}
+i{
+	margin-bottom: 4px;
 }

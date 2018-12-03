@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {fetchData,getEmpDetail} from '../actions/postActions';
-import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
-import { Dropdown } from 'office-ui-fabric-react/lib/Dropdown';
-import { Image } from 'office-ui-fabric-react/lib/Image';
-import {HRID,EMPID,DEPT} from './datasource';
+
 import store from '../store';
 
 
@@ -12,143 +9,219 @@ class Home extends Component {
     constructor(props) {
         super(props)
           this.state={
-                    btnDesabled:true,
-                    initialSelect:"",
-                    ID:[],
-                    empId:'',
-                    imageLoad:'',
-                    img :'hidden',
-                    avatar:"",
-                    id:'',
-                    fname:'',
-                    dept:DEPT
+                      products:[],
+                      itemsSeleted:[],
+                      checkedItems: new Map(),
+                      packages:[]                 
           }
 
-          this.getDetails=this.getDetails.bind(this);
-          this.clearDetails=this.clearDetails.bind(this);
-          this.changeDept=this.changeDept.bind(this);
-          this.changeEmpId=this.changeEmpId.bind(this);
+      this.render_products=this.render_products.bind(this);
+      this.getCourierprice=this.getCourierprice.bind(this);
       }
     
       componentWillReceiveProps(nextProps){
        
-       let data=store.getState().empDetails.items && 
-                store.getState().empDetails.items.data||{};
-                
-       let {id,first_name,avatar}=data;
-       this.setState({
-                        imageLoad:"",
-                        img:"",
-                        id:id,
-                        fname:first_name,
-                        avatar:avatar
-                })
+        let data=store.getState().empDetails.items;
+               this.setState({products:data});
+               
+       
         }
   
-      getDetails(){
-       this.setState({
-                    img:'hidden',
-                    imageLoad:"Loading..."
-        })   
-       this.props.getEmpDetail(this.state.empId,);
-       
+    componentDidMount(){
+      this.props.fetchData();
+    } 
+
+
+    getCourierprice(totalPrice){
+
+      if(totalPrice<200){
+        return 5;
+      }else if(totalPrice>200 && totalPrice<500 ){
+        return 10;
+      }else if(totalPrice>500 && totalPrice<1000 ){
+        return 15;
+      }else if(totalPrice>100 && totalPrice<5000 ){
+        return 20;
+      }else{
+        return null;
       }
+    }
 
-      clearDetails(){
-       this.setState({
-                    btnDesabled:true,
-                    initialSelect:"",
-                    ID:[],
-                    empId:'',
-                    imageLoad:'',
-                    img :'hidden',
-                    avatar:"",
-                    id:'',
-                    fname:'',
-            })
-     }
+    getSelectedItems=(checkedItem,e)=>{
+      
+          const item = e.target.name,
+                itemId=checkedItem.ID,
+                isChecked = e.target.checked;
 
-      changeDept(val){
-        (val.key==="HR")? this.setState({
-               btnDesabled:false,
-               initialSelect:val.key,
-               ID:HRID
-           }):this.setState({
-            btnDesabled:false,
-            initialSelect:val.key,
-            ID:EMPID
+      if(isChecked){
+
+        this.state.itemsSeleted.push(checkedItem);
+      }else{
+
+        var newItems=JSON.parse(JSON.stringify(this.state.itemsSeleted));
+         newItems = newItems.filter(( itm )=>{
+            return itm.ID !== itemId;
+           });
+
+        this.setState({
+                        itemsSeleted: newItems
+        });
+
+      }
+     
+
+    this.setState(prevState => ({ 
+      checkedItems: prevState.checkedItems.set(item, isChecked) 
+    }));
+    
+
+    }
+
+   
+  onSubmit = (e) => {
+
+    e.preventDefault();
+
+    var items    = this.state.itemsSeleted,
+      totalPrice = 0,     packageList = {},
+      totalWt    = 0,     tempArray   = [],pkgCount=1,pkDetails;
+    
+    for(let i=0;i<items.length;i++){
+      
+      totalPrice+=parseInt(items[i].price);
+      totalWt+= parseInt(items[i].weight);
+
+      if(totalPrice>250){
+        
+         pkDetails         = this.getPackageDetials(totalPrice-items[i].price,totalWt-items[i].weight);
+        tempArray.push(pkDetails);
+        packageList[pkgCount] = tempArray;
+
+        pkgCount++;
+        tempArray   = [];
+        totalPrice  = 0;
+        totalWt     = 0;
+        tempArray.push(items[i]);
+         
+           pkDetails         = this.getPackageDetials(items[i].price,items[i].weight);
+          tempArray.push(pkDetails);
+          packageList[pkgCount] = tempArray;
+        
+        if(i===items.length-1){
+          break;
+        }
+        
+      }else{
+        tempArray.push(items[i]);
+        if(i===items.length-1){
+          pkDetails         = this.getPackageDetials(totalPrice,totalWt);
+          tempArray.push(pkDetails);
+          packageList[pkgCount] = tempArray;
+        }
+      }
+    }
+
+    console.log("packageList",packageList)
+   this.finalPackage(packageList);
+    
+  }
+
+   finalPackage(packageList){
+
+      var mainarr=[];
+    for(var pckg in packageList){
+       
+        var itemstr='';
+        packageList[pckg].forEach((pk,i)=>{
+          
+          if(pk.totalPrice){
+             pk["pkg"]=itemstr;
+            mainarr.push(pk);
+          }else{
+            itemstr=itemstr+' '+pk.name;
+          }
+
         })
        
-      }
+    }
+    this.setState({packages:mainarr});
+    }
 
-      changeEmpId(val){
-        let emId=val.text;
-        this.setState({empId:emId});
-      }
+  getPackageDetials(price,totalWt){
 
-    render() { 
-       
+        var pkgDetails              = {};
+        var cCharge                 = this.getCourierprice(totalWt);
+        pkgDetails['totalPrice']    = price;
+        pkgDetails['totalWeight']   = totalWt;;
+        
+        pkgDetails['courierCharge'] = cCharge;
+        
+    return pkgDetails;
+  }
+
+  render_packages=(packages)=>{
+
+    return packages.map((pk,i)=>{
+
+       return <li key={i}>
+                  <h4>package-{i+1}:  {pk["pkg"]}</h4><br/>
+                  <i>Total Price:  ${pk["totalPrice"]}</i><br/>
+                  <i>Total Weight:  {pk["totalWeight"]}g</i><br/>
+                  <i>Courier Charge:  ${pk["courierCharge"]}</i>
+          </li>;
+         
+          
+         
+    });
+
+  }
+
+   render_products(products){
+      var self=this;
+      return products.map((el,i)=>{
+         return (<tr key={i}><td>{el.name}</td><td>{el.price}</td>
+                  <td>{el.weight}</td>
+                  <td><input className="checkbx" type="checkbox" name="products"
+                  checked={self.state.checkedItems.get(el.checked)} 
+                  onChange={self.getSelectedItems.bind(self,el)}/>
+                  </td>
+               </tr>)
+      })
+    }
+
+
+   render() { 
          return (
-                <div className="ms-Grid container">
-                    <div className="ms-Grid-row">
-                        <div className="ms-Grid-col ms-md3 ms-lg3">
-                                <Dropdown
-                                    label="Departments:"
-                                    selectedKey={this.state.initialSelect}
-                                    onChanged={(val)=>
-                                this.changeDept(val)}
-                                options={this.state.dept}
-                                />
-              </div>
-                <div className="ms-Grid-col ms-md3 ms-lg3">
-                                <Dropdown
-                                        label="Employee Id:"
-                                        onChanged={(val)=>
-                                    this.changeEmpId(val)}
-                                    options={this.state.ID}
-                                    disabled={this.state.btnDesabled}
-                                    />
-                  </div>
-                <Btn text="GetDetails" handleClick={this.getDetails}/>
-                <Btn text="Clear" handleClick={this.clearDetails}/>
+                <div className="product-form">
+                 <form onSubmit = {this.onSubmit}>
+                   <table>
+                      <tbody>
+                      <tr><th>Product Name </th><th>Price </th><th>Weight </th><th>select</th></tr>
+                        {this.render_products(this.state.products)}
+                        </tbody>
+
+                   </table>
+                    <button className="submit-btn">
+                        Submit
+                    </button>
+                   </form>
+                   <div className="package">
+                   <h2>Package Detiales</h2>
+                   <ul>
+                        {this.render_packages(this.state.packages)}
+                       </ul>
                    </div>
-                        <br/><br/>
-             <div className="ms-Grid-row">
-                <div className="ms-Grid-col ms-md3 ms-lg3"></div>
-                        {this.state.imageLoad}
-                        <Image
-                            className={this.state.img}
-                            src={this.state.avatar}
-                            alt="Default Image can be anything"
-                            width={300}
-                            />
-             </div><br/>
-                <div className="ms-Grid-row">
-                    <div className="ms-Grid-col ms-md3 ms-lg3"></div>
-                        <div className="ms-Grid-col ms-md2 ms-lg2">ID:{this.state.id}</div>
-                        <div className="ms-Grid-col ms-md2 ms-lg2">Name:{this.state.fname}</div>
-                    </div>
                 </div>
         
-    );
+             );
     }
   }
 
   const mapStateToProps=state=>({
-    emp:state.empDetails.items,
+    products:state.empDetails.items,
     post:state.empDetails.item
   })
 
-  const Btn=(props)=>{
-    return <div> <div className="ms-Grid-col ms-md2 ms-lg2" style={{marginTop:28}}>
-        <DefaultButton
-            data-automation-id="test"
-            allowDisabledFocus={true}
-            text={props.text}
-            onClick={props.handleClick}
-        />
-    </div></div>
- };
 
  export default connect(mapStateToProps,{fetchData,getEmpDetail})(Home)
  
