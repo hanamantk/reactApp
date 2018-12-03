@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux'
-import empReducer from './empReducer'
+import prodReducer from './prodReducer'
 
 export default  combineReducers({
-    empDetails:empReducer
+    prod:prodReducer
 })

@@ -1,2 +1,1 @@
-export  const FETCH_USERS='FETCH_USERS';
-export const  NEW_EMP='NEW_EMP';
+export  const FETCH_PRODUCTS='FETCH_PRODUCTS';

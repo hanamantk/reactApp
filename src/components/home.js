@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import {fetchData,getEmpDetail} from '../actions/postActions';
+import {fetchData} from '../actions/postActions';
 
 import store from '../store';
 
@@ -21,7 +21,7 @@ class Home extends Component {
     
       componentWillReceiveProps(nextProps){
        
-        let data=store.getState().empDetails.items;
+        let data=store.getState().prod.items;
                this.setState({products:data});
                
        
@@ -218,10 +218,9 @@ class Home extends Component {
   }
 
   const mapStateToProps=state=>({
-    products:state.empDetails.items,
-    post:state.empDetails.item
+    products:state.prod.items
   })
 
 
- export default connect(mapStateToProps,{fetchData,getEmpDetail})(Home)
+ export default connect(mapStateToProps,{fetchData})(Home)
  
