@@ -93,20 +93,28 @@ class Home extends Component {
 
       if(totalPrice>250){
         
-         pkDetails         = this.getPackageDetials(totalPrice-items[i].price,totalWt-items[i].weight);
-        tempArray.push(pkDetails);
-        packageList[pkgCount] = tempArray;
+       packageList[pkgCount] = this.buildPackage(totalPrice-items[i].price,totalWt-items[i].weight,tempArray);
 
         pkgCount++;
         tempArray   = [];
         totalPrice  = 0;
         totalWt     = 0;
+       
         tempArray.push(items[i]);
-         
-           pkDetails         = this.getPackageDetials(items[i].price,items[i].weight);
-          tempArray.push(pkDetails);
-          packageList[pkgCount] = tempArray;
-        
+        totalPrice+=parseInt(items[i].price);
+        totalWt+= parseInt(items[i].weight);
+
+          if(totalPrice>250){ 
+          
+          packageList[pkgCount] = this.buildPackage(totalPrice,totalWt,tempArray);
+          
+          }else{
+              if(i===items.length-1){
+
+              packageList[pkgCount] = this.buildPackage(totalPrice,totalWt,tempArray);
+            }
+        }
+      
         if(i===items.length-1){
           break;
         }
@@ -114,17 +122,21 @@ class Home extends Component {
       }else{
         tempArray.push(items[i]);
         if(i===items.length-1){
-          pkDetails         = this.getPackageDetials(totalPrice,totalWt);
-          tempArray.push(pkDetails);
-          packageList[pkgCount] = tempArray;
+         packageList[pkgCount] = this.buildPackage(totalPrice,totalWt,tempArray);
         }
       }
     }
 
-    console.log("packageList",packageList)
-   this.finalPackage(packageList);
+     this.finalPackage(packageList);
     
   }
+
+  buildPackage(totalPrice,totalWt,tempArray){
+      var pkDetails         = this.getPackageDetials(totalPrice,totalWt);
+          tempArray.push(pkDetails);
+          return tempArray;
+    }
+
 
    finalPackage(packageList){
 
